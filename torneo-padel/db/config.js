@@ -3,7 +3,7 @@ const sql = require('mssql');
 const dbConfig = {
     user: process.env.DB_USER || 'sa',
     password: process.env.DB_PASS || '7dl$1F1+',
-    server: process.env.DB_HOST || '192.168.1.237',
+    server: process.env.DB_HOST || 'unionsun.no-ip.biz',
     database: process.env.DB_NAME || 'DESARROLLO',
     options: {
         encrypt: false,
