@@ -27,12 +27,13 @@
   </form>
 
   <script>
-    const api = ''; // tu URL base de la API, ej: 'https://miapi.com'
+    const api = ''; // Dejalo vacío para Railway, o usá '/api' si tenés reverse proxy
 
     async function cargarZonas() {
       const res = await fetch(`${api}/zonas`);
       const zonas = await res.json();
       const zonaSelect = document.getElementById('zonaSelect');
+      zonaSelect.innerHTML = '';
       zonas.forEach(z => {
         const opt = document.createElement('option');
         opt.value = z.Id;
@@ -44,14 +45,13 @@
     async function cargarParejas() {
       const res = await fetch(`${api}/parejas`);
       const parejas = await res.json();
-      console.log('Parejas recibidas:', parejas);
 
       ['pareja1Select', 'pareja2Select'].forEach(id => {
         const select = document.getElementById(id);
         select.innerHTML = '';
         parejas.forEach(p => {
-          const jugador1 = p.Jugador1 ?? 'Jugador1 no definido';
-          const jugador2 = p.Jugador2 ?? 'Jugador2 no definido';
+          const jugador1 = p.jugador1 ?? 'Jugador1';
+          const jugador2 = p.jugador2 ?? 'Jugador2';
 
           const opt = document.createElement('option');
           opt.value = p.Id;
@@ -63,6 +63,7 @@
 
     document.getElementById('formAltaPartido').addEventListener('submit', async e => {
       e.preventDefault();
+
       const zona = document.getElementById('zonaSelect').value;
       const pareja1 = document.getElementById('pareja1Select').value;
       const pareja2 = document.getElementById('pareja2Select').value;
