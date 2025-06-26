@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
         p.Set1P1, p.Set1P2,
         p.Set2P1, p.Set2P2,
         p.Set3P1, p.Set3P2
-      FROM Partidos p
+      FROM Partido p
       JOIN Zonas z ON p.IdZona = z.Id
       JOIN Parejas pa1 ON p.IdPareja1 = pa1.Id
       JOIN Parejas pa2 ON p.IdPareja2 = pa2.Id

@@ -4,96 +4,94 @@
   <meta charset="UTF-8">
   <title>Resultados de Partidos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/estilos.css">
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 1rem;
-      background-color: #f4f4f4;
-      color: #333;
+      background: #f8f9fa;
     }
 
     h1 {
+      color: #333;
       text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
       margin-bottom: 2rem;
     }
 
-    th, td {
-      border: 1px solid #aaa;
-      padding: 0.75rem;
-      text-align: center;
+    form {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    th {
-      background-color: #1e88e5;
-      color: #fff;
+    label, select, input {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      font-size: 1rem;
     }
 
-    @media (max-width: 600px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
+    input[type="number"] {
+      width: 48%;
+      display: inline-block;
+    }
 
-      thead tr {
-        display: none;
-      }
+    input[type="number"]:first-child {
+      margin-right: 4%;
+    }
 
-      td {
-        position: relative;
-        padding-left: 50%;
-        border: 1px solid #ccc;
-      }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
 
-      td::before {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 45%;
-        padding-left: 1rem;
-        white-space: nowrap;
-        font-weight: bold;
-        color: #555;
-      }
+    button:hover {
+      background: #0056b3;
+    }
 
-      td:nth-child(1)::before { content: "Zona"; }
-      td:nth-child(2)::before { content: "Pareja 1"; }
-      td:nth-child(3)::before { content: "Pareja 2"; }
-      td:nth-child(4)::before { content: "Set 1"; }
-      td:nth-child(5)::before { content: "Set 2"; }
-      td:nth-child(6)::before { content: "Set 3"; }
+    @media screen and (max-width: 600px) {
+      input[type="number"] {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Resultados de Partidos</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Zona</th>
-        <th>Pareja 1</th>
-        <th>Pareja 2</th>
-        <th>Set 1</th>
-        <th>Set 2</th>
-        <th>Set 3</th>
-      </tr>
-    </thead>
-    <tbody>
+  <h1>Registrar resultados</h1>
+
+  <form action="/resultados" method="POST">
+    <label for="partido">Seleccionar partido:</label>
+    <select name="partidoId" id="partido" required>
       <% partidos.forEach(p => { %>
-        <tr>
-          <td><%= p.Zona %></td>
-          <td><%= p.Pareja1Jugador1 %> / <%= p.Pareja1Jugador2 %></td>
-          <td><%= p.Pareja2Jugador1 %> / <%= p.Pareja2Jugador2 %></td>
-          <td><%= p.Set1P1 ?? '-' %> - <%= p.Set1P2 ?? '-' %></td>
-          <td><%= p.Set2P1 ?? '-' %> - <%= p.Set2P2 ?? '-' %></td>
-          <td><%= p.Set3P1 ?? '-' %> - <%= p.Set3P2 ?? '-' %></td>
-        </tr>
+        <option value="<%= p.Id %>">
+          <%= p.Zona %>: <%= p.Pareja1Jugador1 %> / <%= p.Pareja1Jugador2 %> vs <%= p.Pareja2Jugador1 %> / <%= p.Pareja2Jugador2 %>
+        </option>
       <% }) %>
-    </tbody>
-  </table>
+    </select>
+
+    <label>Set 1</label>
+    <input type="number" name="Set1P1" min="0" max="7" required>
+    <input type="number" name="Set1P2" min="0" max="7" required>
+
+    <label>Set 2</label>
+    <input type="number" name="Set2P1" min="0" max="7" required>
+    <input type="number" name="Set2P2" min="0" max="7" required>
+
+    <label>Set 3 (opcional)</label>
+    <input type="number" name="Set3P1" min="0" max="7">
+    <input type="number" name="Set3P2" min="0" max="7">
+
+    <button type="submit">Guardar resultados</button>
+  </form>
 </body>
 </html>
