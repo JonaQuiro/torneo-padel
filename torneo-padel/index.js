@@ -4,34 +4,37 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
+
+// Puerto dinámico para Railway o 3000 en local
 const port = process.env.PORT || 3000;
 
-// CORS
+// Configuración CORS (ajustala según tus dominios frontend)
 const allowedOrigins = [
   'https://torneo-padel-production.up.railway.app',
   'http://localhost:3000'
 ];
+
 app.use(cors({
   origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error(`CORS bloqueado para: ${origin}`));
+    if (!origin) return callback(null, true); // permitir postman, curl
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error(`CORS no permitido para el origin: ${origin}`), false);
     }
+    return callback(null, true);
   }
 }));
 
-// Motor de vistas
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-// JSON body
+// Middleware para parsear JSON
 app.use(bodyParser.json());
 
-// Archivos estáticos
+// Configuración de EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Servir archivos estáticos desde /public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rutas API
+// Importar rutas
 const jugadorRoutes = require('./routes/jugadorRoutes');
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const parejaRoutes = require('./routes/parejaRoutes');
@@ -49,10 +52,12 @@ app.use('/torneos', torneoRoutes);
 app.use('/zonas', zonaRoutes);
 app.use('/resultados', resultadosRoutes);
 
+// Ruta raíz opcional
 app.get('/', (req, res) => {
   res.send('API Torneo Pádel funcionando 🎾');
 });
 
+// Levantar servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });

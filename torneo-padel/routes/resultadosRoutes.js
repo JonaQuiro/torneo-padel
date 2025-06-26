@@ -2,51 +2,36 @@ const express = require('express');
 const router = express.Router();
 const { getConnection, sql } = require('../db/config');
 
+// Obtener todos los partidos con nombres
 router.get('/', async (req, res) => {
-  console.log('📥 GET /resultados recibido');
-
   try {
     const pool = await getConnection();
-    console.log('✅ Conexión a BD OK');
-
     const result = await pool.request().query(`
       SELECT 
         p.Id,
         z.Nombre AS Zona,
-        
         j1.Nombre AS Pareja1Jugador1,
         j2.Nombre AS Pareja1Jugador2,
-        
         j3.Nombre AS Pareja2Jugador1,
-        j4.Nombre AS Pareja2Jugador2,
-
-        p.Set1P1, p.Set1P2,
-        p.Set2P1, p.Set2P2,
-        p.Set3P1, p.Set3P2,
-        p.Fecha, p.Horario
-
+        j4.Nombre AS Pareja2Jugador2
       FROM PARTIDO p
-      JOIN PAREJA pa1 ON p.IdPareja1 = pa1.Id
-      JOIN JUGADOR j1 ON pa1.IdJugador1 = j1.Id
-      JOIN JUGADOR j2 ON pa1.IdJugador2 = j2.Id
-
-      JOIN PAREJA pa2 ON p.IdPareja2 = pa2.Id
-      JOIN JUGADOR j3 ON pa2.IdJugador1 = j3.Id
-      JOIN JUGADOR j4 ON pa2.IdJugador2 = j4.Id
-
-      LEFT JOIN ZONA z ON p.IdZona = z.Id
+      INNER JOIN PAREJA pa1 ON pa1.Id = p.IdPareja1
+      INNER JOIN PAREJA pa2 ON pa2.Id = p.IdPareja2
+      INNER JOIN JUGADOR j1 ON j1.Id = pa1.IdJugador1
+      INNER JOIN JUGADOR j2 ON j2.Id = pa1.IdJugador2
+      INNER JOIN JUGADOR j3 ON j3.Id = pa2.IdJugador1
+      INNER JOIN JUGADOR j4 ON j4.Id = pa2.IdJugador2
+      LEFT JOIN ZONA z ON z.Id = p.IdZona
     `);
 
-    const partidos = result.recordset;
-
-    res.render('resultados', { partidos });
-
+    res.render('resultados', { partidos: result.recordset });
   } catch (error) {
-    console.error('❌ Error al obtener los partidos:', error);
+    console.error('❌ Error al obtener partidos:', error);
     res.status(500).send('Error interno del servidor');
   }
 });
 
+// Guardar resultados del partido
 router.post('/:id', async (req, res) => {
   const partidoId = req.params.id;
   const {
@@ -66,8 +51,7 @@ router.post('/:id', async (req, res) => {
       .input('Set3P1', sql.Int, set3p1)
       .input('Set3P2', sql.Int, set3p2)
       .query(`
-        UPDATE PARTIDO
-        SET 
+        UPDATE PARTIDO SET 
           Set1P1 = @Set1P1,
           Set1P2 = @Set1P2,
           Set2P1 = @Set2P1,
@@ -77,8 +61,7 @@ router.post('/:id', async (req, res) => {
         WHERE Id = @Id
       `);
 
-    res.status(200).json({ message: '✅ Resultados guardados' });
-
+    res.json({ message: '✅ Resultados guardados correctamente' });
   } catch (error) {
     console.error('❌ Error al guardar resultados:', error);
     res.status(500).json({ message: 'Error al guardar resultados' });
