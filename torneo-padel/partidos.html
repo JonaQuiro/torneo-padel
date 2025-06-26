@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Partidos por Zona - Torneo Pádel</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Torneo 7ma - La Gambeta</h1>
+
+        <div id="zonasContainer"></div>
+    </div>
+
+    <script>
+        const apiBase = 'http://localhost:3000';
+
+        async function cargarPartidosPorZona() {
+            try {
+                const res = await fetch(`${apiBase}/partidos`);
+                const partidos = await res.json();
+
+                const zonas = {};
+                partidos.forEach(p => {
+                    const zona = p.Zona ?? 'Sin Zona';
+                    if (!zonas[zona]) zonas[zona] = [];
+                    zonas[zona].push(p);
+                });
+
+                const container = document.getElementById('zonasContainer');
+                container.innerHTML = '';
+
+                for (const zona in zonas) {
+                    const titulo = document.createElement('h2');
+                    titulo.textContent = `Zona ${zona}`;
+                    container.appendChild(titulo);
+
+                    const tabla = document.createElement('table');
+                    tabla.innerHTML = `
+            <thead>
+              <tr>
+                <th>Pareja 1</th>
+                <th>Pareja 2</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${zonas[zona].map(p => {
+                        const fechaRaw = p.Fecha; // ej "2025-06-28T00:00:00.000Z"
+                        const fecha = fechaRaw ? fechaRaw.substr(0, 10) : '';
+                        const hora = p.Horario ? p.Horario.substr(11, 5) : '';
+                        const pareja1 = `${p.Pareja1Jugador1} / ${p.Pareja1Jugador2}`;
+                        const pareja2 = `${p.Pareja2Jugador1} / ${p.Pareja2Jugador2}`;
+                        return `
+                  <tr>
+                    <td>${pareja1}</td>
+                    <td>${pareja2}</td>
+                    <td>${fecha}</td>
+                    <td>${hora}</td>
+                  </tr>
+                `;
+                    }).join('')}
+            </tbody>
+          `;
+
+                    container.appendChild(tabla);
+                }
+            } catch (error) {
+                alert('No se pudieron cargar los partidos');
+                console.error(error);
+            }
+        }
+
+        window.onload = cargarPartidosPorZona;
+    </script>
+</body>
+
+</html>

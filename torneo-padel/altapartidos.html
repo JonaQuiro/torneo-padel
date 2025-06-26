@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Alta de Partidos</title>
+</head>
+<body>
+  <h1>Cargar nuevo partido</h1>
+
+  <form id="formAltaPartido">
+    Zona:
+    <select id="zonaSelect" required></select><br><br>
+
+    Pareja 1:
+    <select id="pareja1Select" required></select><br><br>
+
+    Pareja 2:
+    <select id="pareja2Select" required></select><br><br>
+
+    Fecha:
+    <input type="date" id="fechaPartido" required><br><br>
+
+    Hora:
+    <input type="time" id="horaPartido" required><br><br>
+
+    <button type="submit">Guardar partido</button>
+  </form>
+
+  <script>
+    const api = 'http://localhost:3000';
+
+    async function cargarZonas() {
+      const res = await fetch(`${api}/zonas`);
+      const zonas = await res.json();
+      const zonaSelect = document.getElementById('zonaSelect');
+      zonas.forEach(z => {
+        const opt = document.createElement('option');
+        opt.value = z.Id;
+        opt.textContent = z.Nombre;
+        zonaSelect.appendChild(opt);
+      });
+    }
+
+    async function cargarParejas() {
+      const res = await fetch(`${api}/parejas`);
+      const parejas = await res.json();
+      ['pareja1Select', 'pareja2Select'].forEach(id => {
+        const select = document.getElementById(id);
+        select.innerHTML = '';
+        parejas.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.Id;
+          opt.textContent = `${p.Jugador1} / ${p.Jugador2} (${p.Zona ?? '-'})`;
+          select.appendChild(opt);
+        });
+      });
+    }
+
+    document.getElementById('formAltaPartido').addEventListener('submit', async e => {
+      e.preventDefault();
+      const zona = document.getElementById('zonaSelect').value;
+      const pareja1 = document.getElementById('pareja1Select').value;
+      const pareja2 = document.getElementById('pareja2Select').value;
+      const fecha = document.getElementById('fechaPartido').value;
+      const hora = document.getElementById('horaPartido').value;
+
+      if (pareja1 === pareja2) {
+        alert('Las parejas deben ser diferentes');
+        return;
+      }
+
+      const res = await fetch(`${api}/partidos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          idPareja1: Number(pareja1),
+          idPareja2: Number(pareja2),
+          fecha,
+          horario: hora,
+          idZona: Number(zona)
+        })
+      });
+
+      if (res.ok) {
+        alert('Partido guardado');
+        document.getElementById('formAltaPartido').reset();
+      } else {
+        alert('Error al guardar el partido');
+      }
+    });
+
+    window.onload = () => {
+      cargarZonas();
+      cargarParejas();
+    };
+  </script>
+</body>
+</html>
