@@ -1,117 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Resultados de Partidos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f9f9f9;
-      color: #2e6933;
+      padding: 1rem;
+      background-color: #f4f4f4;
+      color: #333;
     }
+
     h1 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 1.5rem;
     }
-    form {
-      max-width: 500px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      border-radius: 8px;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    select, input[type="number"] {
+
+    table {
       width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
     }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 10px;
-      background-color: #2e6933;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+
+    th, td {
+      border: 1px solid #aaa;
+      padding: 0.75rem;
+      text-align: center;
     }
-    button:hover {
-      background-color: #245125;
+
+    th {
+      background-color: #1e88e5;
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead tr {
+        display: none;
+      }
+
+      td {
+        position: relative;
+        padding-left: 50%;
+        border: 1px solid #ccc;
+      }
+
+      td::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 45%;
+        padding-left: 1rem;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #555;
+      }
+
+      td:nth-child(1)::before { content: "Zona"; }
+      td:nth-child(2)::before { content: "Pareja 1"; }
+      td:nth-child(3)::before { content: "Pareja 2"; }
+      td:nth-child(4)::before { content: "Set 1"; }
+      td:nth-child(5)::before { content: "Set 2"; }
+      td:nth-child(6)::before { content: "Set 3"; }
     }
   </style>
 </head>
 <body>
-  <h1>Registrar resultados</h1>
-
-  <form id="formResultados">
-    <label for="partidoSelect">Partido:</label>
-    <select id="partidoSelect" required>
-      <option value="" disabled selected>Seleccioná un partido</option>
+  <h1>Resultados de Partidos</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Zona</th>
+        <th>Pareja 1</th>
+        <th>Pareja 2</th>
+        <th>Set 1</th>
+        <th>Set 2</th>
+        <th>Set 3</th>
+      </tr>
+    </thead>
+    <tbody>
       <% partidos.forEach(p => { %>
-        <option value="<%= p.Id %>">
-          <%= p.Zona || '-' %>: <%= p.Pareja1Jugador1 %> / <%= p.Pareja1Jugador2 %> vs <%= p.Pareja2Jugador1 %> / <%= p.Pareja2Jugador2 %>
-        </option>
+        <tr>
+          <td><%= p.Zona %></td>
+          <td><%= p.Pareja1Jugador1 %> / <%= p.Pareja1Jugador2 %></td>
+          <td><%= p.Pareja2Jugador1 %> / <%= p.Pareja2Jugador2 %></td>
+          <td><%= p.Set1P1 ?? '-' %> - <%= p.Set1P2 ?? '-' %></td>
+          <td><%= p.Set2P1 ?? '-' %> - <%= p.Set2P2 ?? '-' %></td>
+          <td><%= p.Set3P1 ?? '-' %> - <%= p.Set3P2 ?? '-' %></td>
+        </tr>
       <% }) %>
-    </select>
-
-    <label>Set 1:</label>
-    <input type="number" id="set1p1" min="0" max="7" placeholder="Puntaje Pareja 1" />
-    <input type="number" id="set1p2" min="0" max="7" placeholder="Puntaje Pareja 2" />
-
-    <label>Set 2:</label>
-    <input type="number" id="set2p1" min="0" max="7" placeholder="Puntaje Pareja 1" />
-    <input type="number" id="set2p2" min="0" max="7" placeholder="Puntaje Pareja 2" />
-
-    <label>Set 3:</label>
-    <input type="number" id="set3p1" min="0" max="7" placeholder="Puntaje Pareja 1" />
-    <input type="number" id="set3p2" min="0" max="7" placeholder="Puntaje Pareja 2" />
-
-    <button type="submit">Guardar resultados</button>
-  </form>
-
-  <script>
-    document.getElementById('formResultados').addEventListener('submit', async e => {
-      e.preventDefault();
-
-      const partidoId = document.getElementById('partidoSelect').value;
-      const datos = {
-        set1p1: Number(document.getElementById('set1p1').value || 0),
-        set1p2: Number(document.getElementById('set1p2').value || 0),
-        set2p1: Number(document.getElementById('set2p1').value || 0),
-        set2p2: Number(document.getElementById('set2p2').value || 0),
-        set3p1: Number(document.getElementById('set3p1').value || 0),
-        set3p2: Number(document.getElementById('set3p2').value || 0),
-      };
-
-      try {
-        const res = await fetch(`/partidos/${partidoId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(datos)
-        });
-
-        if (res.ok) {
-          alert('Resultados guardados');
-          e.target.reset();
-        } else {
-          alert('Error al guardar resultados');
-        }
-      } catch (error) {
-        alert('Error en la comunicación con el servidor');
-        console.error(error);
-      }
-    });
-  </script>
+    </tbody>
+  </table>
 </body>
 </html>

@@ -1,28 +1,44 @@
 const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
 const cors = require('cors');
-const { getConnection, sql } = require('./db/config');
+const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middlewares
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// CORS
+const allowedOrigins = [
+  'https://torneo-padel-production.up.railway.app',
+  'http://localhost:3000'
+];
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error(`CORS bloqueado para: ${origin}`));
+    }
+  }
+}));
 
-// Configurar motor de vistas
+// Motor de vistas
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// Importar rutas
+// JSON body
+app.use(bodyParser.json());
+
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Rutas API
 const jugadorRoutes = require('./routes/jugadorRoutes');
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const parejaRoutes = require('./routes/parejaRoutes');
 const partidoRoutes = require('./routes/partidoRoutes');
 const torneoRoutes = require('./routes/torneoRoutes');
 const zonaRoutes = require('./routes/zonaRoutes');
+const resultadosRoutes = require('./routes/resultadosRoutes');
 
 // Usar rutas
 app.use('/jugadores', jugadorRoutes);
@@ -31,34 +47,10 @@ app.use('/parejas', parejaRoutes);
 app.use('/partidos', partidoRoutes);
 app.use('/torneos', torneoRoutes);
 app.use('/zonas', zonaRoutes);
+app.use('/resultados', resultadosRoutes);
 
-// Ruta raíz opcional
 app.get('/', (req, res) => {
   res.send('API Torneo Pádel funcionando 🎾');
-});
-
-// Ruta para renderizar la vista resultados.ejs con partidos
-app.get('/resultados', async (req, res) => {
-  try {
-    const pool = await getConnection();
-
-    const result = await pool.request()
-      .query(`
-        SELECT Zona, 
-               Pareja1Jugador1, Pareja1Jugador2, 
-               Pareja2Jugador1, Pareja2Jugador2, 
-               Fecha, Horario
-        FROM partidos
-        ORDER BY Zona, Fecha, Horario
-      `);
-
-    const partidos = result.recordset;
-
-    res.render('resultados', { partidos });
-  } catch (error) {
-    console.error('Error consultando partidos:', error);
-    res.status(500).send('Error interno del servidor');
-  }
 });
 
 app.listen(port, () => {
