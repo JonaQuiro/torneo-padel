@@ -23,13 +23,13 @@ router.get('/', async (req, res) => {
         p.Set2P1, p.Set2P2,
         p.Set3P1, p.Set3P2
       FROM Partido p
-      JOIN Zonas z ON p.IdZona = z.Id
-      JOIN Parejas pa1 ON p.IdPareja1 = pa1.Id
-      JOIN Parejas pa2 ON p.IdPareja2 = pa2.Id
-      JOIN Jugadores j1 ON pa1.Jugador1 = j1.Id
-      JOIN Jugadores j2 ON pa1.Jugador2 = j2.Id
-      JOIN Jugadores j3 ON pa2.Jugador1 = j3.Id
-      JOIN Jugadores j4 ON pa2.Jugador2 = j4.Id
+      JOIN Zona z ON p.IdZona = z.Id
+      JOIN Pareja pa1 ON p.IdPareja1 = pa1.Id
+      JOIN Pareja pa2 ON p.IdPareja2 = pa2.Id
+      JOIN Jugador j1 ON pa1.Jugador1 = j1.Id
+      JOIN Jugador j2 ON pa1.Jugador2 = j2.Id
+      JOIN Jugador j3 ON pa2.Jugador1 = j3.Id
+      JOIN Jugador j4 ON pa2.Jugador2 = j4.Id
     `);
 
     console.log(`✅ Partidos encontrados: ${result.recordset.length}`);
