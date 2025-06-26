@@ -2,38 +2,121 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Resultados de Partidos</title>
+  <title>Registrar Resultados</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #2e6933;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      color: #333;
+      font-weight: bold;
+    }
+    select, input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .set-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .set-group input {
+      flex: 1;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #2e6933;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #245528;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Registrar resultados</h1>
+  <div class="container">
+    <h1>Registrar Resultados</h1>
 
-  <form id="formResultados">
-    Partido:
-    <select id="partidoSelect" required></select><br><br>
+    <form id="formResultados">
+      <label for="partidoSelect">Partido:</label>
+      <select id="partidoSelect" required></select>
 
-    Set 1: <input type="number" id="set1p1" min="0" max="7"> -
-           <input type="number" id="set1p2" min="0" max="7"><br><br>
-    Set 2: <input type="number" id="set2p1" min="0" max="7"> -
-           <input type="number" id="set2p2" min="0" max="7"><br><br>
-    Set 3: <input type="number" id="set3p1" min="0" max="7"> -
-           <input type="number" id="set3p2" min="0" max="7"><br><br>
+      <label>Set 1:</label>
+      <div class="set-group">
+        <input type="number" id="set1p1" min="0" max="7" placeholder="Pareja 1">
+        <input type="number" id="set1p2" min="0" max="7" placeholder="Pareja 2">
+      </div>
 
-    <button type="submit">Guardar resultados</button>
-  </form>
+      <label>Set 2:</label>
+      <div class="set-group">
+        <input type="number" id="set2p1" min="0" max="7" placeholder="Pareja 1">
+        <input type="number" id="set2p2" min="0" max="7" placeholder="Pareja 2">
+      </div>
+
+      <label>Set 3 (opcional):</label>
+      <div class="set-group">
+        <input type="number" id="set3p1" min="0" max="7" placeholder="Pareja 1">
+        <input type="number" id="set3p2" min="0" max="7" placeholder="Pareja 2">
+      </div>
+
+      <button type="submit">Guardar Resultados</button>
+    </form>
+  </div>
 
   <script>
-    const api = 'http://localhost:3000';
+    const api = 'https://tu-api.railway.app'; // Cambiá si estás trabajando localmente
 
     async function cargarPartidos() {
-      const res = await fetch(`${api}/partidos`);
-      const partidos = await res.json();
-      const select = document.getElementById('partidoSelect');
-      partidos.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p.Id;
-        opt.textContent = `${p.Zona ?? '-'}: ${p.Pareja1Jugador1} / ${p.Pareja1Jugador2} vs ${p.Pareja2Jugador1} / ${p.Pareja2Jugador2}`;
-        select.appendChild(opt);
-      });
+      try {
+        const res = await fetch(`${api}/partidos`);
+        const partidos = await res.json();
+        const select = document.getElementById('partidoSelect');
+        partidos.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.Id;
+          opt.textContent = `${p.Zona ?? '-'}: ${p.Pareja1Jugador1} / ${p.Pareja1Jugador2} vs ${p.Pareja2Jugador1} / ${p.Pareja2Jugador2}`;
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        alert('Error al cargar los partidos');
+        console.error(err);
+      }
     }
 
     document.getElementById('formResultados').addEventListener('submit', async e => {
@@ -49,17 +132,22 @@
         set3p2: Number(document.getElementById('set3p2').value || 0),
       };
 
-      const res = await fetch(`${api}/partidos/${partidoId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-      });
+      try {
+        const res = await fetch(`${api}/partidos/${partidoId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos)
+        });
 
-      if (res.ok) {
-        alert('Resultados guardados');
-        document.getElementById('formResultados').reset();
-      } else {
-        alert('Error al guardar resultados');
+        if (res.ok) {
+          alert('Resultados guardados');
+          document.getElementById('formResultados').reset();
+        } else {
+          alert('Error al guardar resultados');
+        }
+      } catch (err) {
+        alert('Error de red');
+        console.error(err);
       }
     });
 
