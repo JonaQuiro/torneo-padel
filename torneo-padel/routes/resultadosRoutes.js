@@ -47,4 +47,42 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.post('/:id', async (req, res) => {
+  const partidoId = req.params.id;
+  const {
+    set1p1, set1p2,
+    set2p1, set2p2,
+    set3p1, set3p2
+  } = req.body;
+
+  try {
+    const pool = await getConnection();
+    await pool.request()
+      .input('Id', sql.Int, partidoId)
+      .input('Set1P1', sql.Int, set1p1)
+      .input('Set1P2', sql.Int, set1p2)
+      .input('Set2P1', sql.Int, set2p1)
+      .input('Set2P2', sql.Int, set2p2)
+      .input('Set3P1', sql.Int, set3p1)
+      .input('Set3P2', sql.Int, set3p2)
+      .query(`
+        UPDATE PARTIDO
+        SET 
+          Set1P1 = @Set1P1,
+          Set1P2 = @Set1P2,
+          Set2P1 = @Set2P1,
+          Set2P2 = @Set2P2,
+          Set3P1 = @Set3P1,
+          Set3P2 = @Set3P2
+        WHERE Id = @Id
+      `);
+
+    res.status(200).json({ message: '✅ Resultados guardados' });
+
+  } catch (error) {
+    console.error('❌ Error al guardar resultados:', error);
+    res.status(500).json({ message: 'Error al guardar resultados' });
+  }
+});
+
 module.exports = router;
