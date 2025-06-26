@@ -82,6 +82,7 @@
     </div>
 
     <script>
+        // Vacío para que tome el mismo host (Railway o local)
         const apiBase = '';
 
         async function cargarPartidosPorZona() {
@@ -91,7 +92,7 @@
 
                 const zonas = {};
                 partidos.forEach(p => {
-                    const zona = p.Zona ?? 'Sin Zona';
+                    const zona = p.Zona && p.Zona.trim() !== '' ? p.Zona : 'Sin Zona';
                     if (!zonas[zona]) zonas[zona] = [];
                     zonas[zona].push(p);
                 });
@@ -118,7 +119,7 @@
                             ${zonas[zona].map(p => {
                                 const fechaRaw = p.Fecha;
                                 const fecha = fechaRaw ? fechaRaw.substr(0, 10) : '';
-                                const hora = p.Horario ? new Date(`1970-01-01T${p.Horario}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                                const hora = p.Horario ? new Date(p.Horario).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
                                 const pareja1 = `${p.Pareja1Jugador1} / ${p.Pareja1Jugador2}`;
                                 const pareja2 = `${p.Pareja2Jugador1} / ${p.Pareja2Jugador2}`;
                                 return `
