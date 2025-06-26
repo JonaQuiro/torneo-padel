@@ -3,74 +3,75 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Partidos por Zona - Torneo Pádel</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background: #f9f9f9;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
-            text-align: center;
-            color: #2e6933;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: #2e6933;
-            color: white;
-        }
-        /* Responsive */
-        @media (max-width: 600px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-            th {
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-            }
-            tr {
-                margin-bottom: 15px;
-                border: 1px solid #ccc;
-                padding: 10px;
-            }
-            td {
-                border: none;
-                position: relative;
-                padding-left: 50%;
-                text-align: left;
-            }
-            td:before {
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                width: 45%;
-                white-space: nowrap;
-                font-weight: bold;
-                color: #2e6933;
-            }
-            td:nth-of-type(1):before { content: "Pareja 1"; }
-            td:nth-of-type(2):before { content: "Pareja 2"; }
-            td:nth-of-type(3):before { content: "Fecha"; }
-            td:nth-of-type(4):before { content: "Hora"; }
-        }
-    </style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f9f9f9;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  h1, h2 {
+    text-align: center;
+    color: #2e6933;
+    margin-bottom: 20px;
+  }
+
+  form label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+  }
+
+  input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+
+  button {
+    background-color: #2e6933;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 20px;
+  }
+
+  button:hover {
+    background-color: #215027;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 10px;
+    }
+
+    h1, h2 {
+      font-size: 22px;
+    }
+
+    input, select, button {
+      font-size: 16px;
+      padding: 10px;
+    }
+  }
+</style>
+
 </head>
 
 <body>
