@@ -16,8 +16,8 @@ async function crearPareja(req, res) {
             .input('IdJugador1', idJugador1)
             .input('IdJugador2', idJugador2)
             .query(`
-                INSERT INTO PAREJA (IdJugador1, IdJugador2)
-                VALUES (@IdJugador1, @IdJugador2)
+                INSERT INTO PAREJA (IdJugador1, IdJugador2, IdTorneo)
+                VALUES (@IdJugador1, @IdJugador2, 1)
             `);
 
         res.status(201).json({ mensaje: 'Pareja creada correctamente' });
