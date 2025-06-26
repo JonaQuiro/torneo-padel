@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar Resultados</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    select, input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .set-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .set-row input {
+      flex: 1;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2e6a9e;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #1d4e78;
+    }
+
+    @media (max-width: 600px) {
+      .set-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Registrar Resultados</h1>
+    <form method="POST" action="/guardar-resultados">
+      <label for="partidoSelect">Partido</label>
+      <select name="partidoId" id="partidoSelect" required>
+        <% partidos.forEach(p => { %>
+          <option value="<%= p.Id %>">
+            Zona <%= p.Zona %>: <%= p.Pareja1Jugador1 %> / <%= p.Pareja1Jugador2 %> vs <%= p.Pareja2Jugador1 %> / <%= p.Pareja2Jugador2 %>
+          </option>
+        <% }) %>
+      </select>
+
+      <label>Set 1</label>
+      <div class="set-row">
+        <input type="number" name="set1p1" min="0" max="7" placeholder="Pareja 1" required />
+        <input type="number" name="set1p2" min="0" max="7" placeholder="Pareja 2" required />
+      </div>
+
+      <label>Set 2</label>
+      <div class="set-row">
+        <input type="number" name="set2p1" min="0" max="7" placeholder="Pareja 1" required />
+        <input type="number" name="set2p2" min="0" max="7" placeholder="Pareja 2" required />
+      </div>
+
+      <label>Set 3</label>
+      <div class="set-row">
+        <input type="number" name="set3p1" min="0" max="7" placeholder="Pareja 1" />
+        <input type="number" name="set3p2" min="0" max="7" placeholder="Pareja 2" />
+      </div>
+
+      <button type="submit">Guardar Resultados</button>
+    </form>
+  </div>
+</body>
+</html>
