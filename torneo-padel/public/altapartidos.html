@@ -50,8 +50,8 @@
         const select = document.getElementById(id);
         select.innerHTML = '';
         parejas.forEach(p => {
-          const jugador1 = p.jugador1 ?? 'Jugador1';
-          const jugador2 = p.jugador2 ?? 'Jugador2';
+          const jugador1 = p.Jugador1 ?? 'Jugador1';
+          const jugador2 = p.Jugador2 ?? 'Jugador2';
 
           const opt = document.createElement('option');
           opt.value = p.Id;
