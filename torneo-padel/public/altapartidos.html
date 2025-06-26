@@ -27,7 +27,7 @@
   </form>
 
   <script>
-    const api = '';  // Pone acá la URL base de tu API, ej: 'https://tuapp.railway.app'
+    const api = ''; // tu URL base de la API, ej: 'https://miapi.com'
 
     async function cargarZonas() {
       const res = await fetch(`${api}/zonas`);
@@ -44,13 +44,18 @@
     async function cargarParejas() {
       const res = await fetch(`${api}/parejas`);
       const parejas = await res.json();
+      console.log('Parejas recibidas:', parejas);
+
       ['pareja1Select', 'pareja2Select'].forEach(id => {
         const select = document.getElementById(id);
         select.innerHTML = '';
         parejas.forEach(p => {
+          const jugador1 = p.Jugador1 ?? 'Jugador1 no definido';
+          const jugador2 = p.Jugador2 ?? 'Jugador2 no definido';
+
           const opt = document.createElement('option');
           opt.value = p.Id;
-          opt.textContent = `${p.Jugador1} / ${p.Jugador2}`;  // <-- CAMBIO ACÁ
+          opt.textContent = `${jugador1} / ${jugador2}`;
           select.appendChild(opt);
         });
       });
