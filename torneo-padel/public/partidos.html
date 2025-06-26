@@ -5,6 +5,73 @@
     <meta charset="UTF-8" />
     <title>Partidos por Zona - Torneo Pádel</title>
     <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* Opcional: un poco de estilo para que la tabla quede linda y responsiva */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f9f9f9;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #2e6933;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #2e6933;
+            color: white;
+        }
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            th {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                padding: 10px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+                text-align: left;
+            }
+            td:before {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                width: 45%;
+                white-space: nowrap;
+                font-weight: bold;
+                color: #2e6933;
+            }
+            td:nth-of-type(1):before { content: "Pareja 1"; }
+            td:nth-of-type(2):before { content: "Pareja 2"; }
+            td:nth-of-type(3):before { content: "Fecha"; }
+            td:nth-of-type(4):before { content: "Hora"; }
+        }
+    </style>
 </head>
 
 <body>
@@ -15,7 +82,7 @@
     </div>
 
     <script>
-        const apiBase = 'http://localhost:3000';
+        const apiBase = '';
 
         async function cargarPartidosPorZona() {
             try {
@@ -39,32 +106,32 @@
 
                     const tabla = document.createElement('table');
                     tabla.innerHTML = `
-            <thead>
-              <tr>
-                <th>Pareja 1</th>
-                <th>Pareja 2</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${zonas[zona].map(p => {
-                        const fechaRaw = p.Fecha; // ej "2025-06-28T00:00:00.000Z"
-                        const fecha = fechaRaw ? fechaRaw.substr(0, 10) : '';
-                        const hora = p.Horario ? p.Horario.substr(11, 5) : '';
-                        const pareja1 = `${p.Pareja1Jugador1} / ${p.Pareja1Jugador2}`;
-                        const pareja2 = `${p.Pareja2Jugador1} / ${p.Pareja2Jugador2}`;
-                        return `
-                  <tr>
-                    <td>${pareja1}</td>
-                    <td>${pareja2}</td>
-                    <td>${fecha}</td>
-                    <td>${hora}</td>
-                  </tr>
-                `;
-                    }).join('')}
-            </tbody>
-          `;
+                        <thead>
+                            <tr>
+                                <th>Pareja 1</th>
+                                <th>Pareja 2</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${zonas[zona].map(p => {
+                                const fechaRaw = p.Fecha;
+                                const fecha = fechaRaw ? fechaRaw.substr(0, 10) : '';
+                                const hora = p.Horario ? new Date(`1970-01-01T${p.Horario}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                                const pareja1 = `${p.Pareja1Jugador1} / ${p.Pareja1Jugador2}`;
+                                const pareja2 = `${p.Pareja2Jugador1} / ${p.Pareja2Jugador2}`;
+                                return `
+                                    <tr>
+                                        <td>${pareja1}</td>
+                                        <td>${pareja2}</td>
+                                        <td>${fecha}</td>
+                                        <td>${hora}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    `;
 
                     container.appendChild(tabla);
                 }
