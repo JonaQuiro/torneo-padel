@@ -52,9 +52,8 @@ app.use('/torneos', torneoRoutes);
 app.use('/zonas', zonaRoutes);
 app.use('/resultados', resultadosRoutes);
 
-// Ruta raíz opcional
 app.get('/', (req, res) => {
-  res.send('API Torneo Pádel funcionando 🎾');
+  res.render('index');
 });
 
 // Levantar servidor

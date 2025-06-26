@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Inicio - Torneo Pádel La Gambeta</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #2e6933;
+      margin-bottom: 30px;
+    }
+    .btn-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    a.button {
+      display: inline-block;
+      padding: 15px 30px;
+      background-color: #2e6933;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      min-width: 140px;
+    }
+    a.button:hover {
+      background-color: #235021;
+    }
+    @media (max-width: 600px) {
+      .btn-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+      a.button {
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Torneo Pádel - Panel de Control</h1>
+  <div class="btn-container">
+    <a href="/partidos" class="button">Partidos</a>
+    <a href="/resultados" class="button">Resultados</a>
+    <a href="/parejas" class="button">Parejas</a>
+    <a href="/jugadores" class="button">Jugadores</a>
+    <a href="/zonas" class="button">Zonas</a>
+    <a href="/torneos" class="button">Torneos</a>
+    <a href="/categorias" class="button">Categorías</a>
+  </div>
+</body>
+</html>
