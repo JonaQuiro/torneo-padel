@@ -1,10 +1,10 @@
 const sql = require('mssql');
 
 const dbConfig = {
-    user: 'sa',
-    password: '7dl$1F1+',
-    server: '192.168.1.237',
-    database: 'DESARROLLO',
+    user: process.env.DB_USER || 'sa',
+    password: process.env.DB_PASS || '7dl$1F1+',
+    server: process.env.DB_HOST || '192.168.1.237',
+    database: process.env.DB_NAME || 'DESARROLLO',
     options: {
         encrypt: false,
         trustServerCertificate: true
