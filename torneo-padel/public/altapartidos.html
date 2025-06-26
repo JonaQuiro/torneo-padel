@@ -27,7 +27,7 @@
   </form>
 
   <script>
-    const api = 'http://localhost:3000';
+    const api = '';
 
     async function cargarZonas() {
       const res = await fetch(`${api}/zonas`);
@@ -50,7 +50,7 @@
         parejas.forEach(p => {
           const opt = document.createElement('option');
           opt.value = p.Id;
-          opt.textContent = `${p.Jugador1} / ${p.Jugador2} (${p.Zona ?? '-'})`;
+          opt.textContent = `${p.Pareja1Jugador1} / ${p.Pareja1Jugador2}`;
           select.appendChild(opt);
         });
       });
