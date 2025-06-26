@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Partidos por Zona - Torneo Pádel</title>
-    <link rel="stylesheet" href="css/style.css" />
     <style>
-        /* Opcional: un poco de estilo para que la tabla quede linda y responsiva */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -37,6 +35,7 @@
             background-color: #2e6933;
             color: white;
         }
+        /* Responsive */
         @media (max-width: 600px) {
             table, thead, tbody, th, td, tr {
                 display: block;
@@ -82,7 +81,7 @@
     </div>
 
     <script>
-        // Vacío para que tome el mismo host (Railway o local)
+        // Cambiá la URL base según dónde esté tu API deployada
         const apiBase = '';
 
         async function cargarPartidosPorZona() {
@@ -92,7 +91,7 @@
 
                 const zonas = {};
                 partidos.forEach(p => {
-                    const zona = p.Zona && p.Zona.trim() !== '' ? p.Zona : 'Sin Zona';
+                    const zona = p.Zona ?? 'Sin Zona';
                     if (!zonas[zona]) zonas[zona] = [];
                     zonas[zona].push(p);
                 });
@@ -119,7 +118,8 @@
                             ${zonas[zona].map(p => {
                                 const fechaRaw = p.Fecha;
                                 const fecha = fechaRaw ? fechaRaw.substr(0, 10) : '';
-                                const hora = p.Horario ? new Date(p.Horario).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                                // Tomamos la hora y minutos directamente sin conversión de zona horaria
+                                const hora = p.Horario ? p.Horario.substr(11, 5) : '';
                                 const pareja1 = `${p.Pareja1Jugador1} / ${p.Pareja1Jugador2}`;
                                 const pareja2 = `${p.Pareja2Jugador1} / ${p.Pareja2Jugador2}`;
                                 return `
