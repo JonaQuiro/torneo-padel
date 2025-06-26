@@ -8,27 +8,13 @@ const app = express();
 // Puerto dinámico para Railway o 3000 en local
 const port = process.env.PORT || 3000;
 
-// Configuración CORS - permitir solo frontend en Railway y localhost
-const allowedOrigins = [
-  'https://torneo-padel-production.up.railway.app',
-  'http://localhost:3000'
-];
-
-app.use(cors({
-  origin: function(origin, callback) {
-    // Permitir requests sin origin (ej: postman, curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      return callback(new Error(`CORS no permitido para el origin: ${origin}`), false);
-    }
-    return callback(null, true);
-  }
-}));
+// 🛑 CORS TEMPORAL: Permitir todo (usalo solo mientras probás)
+app.use(cors());
 
 // Middleware para parsear JSON
 app.use(bodyParser.json());
 
-// Servir archivos estáticos desde /public
+// Servir archivos estáticos desde la carpeta /public
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Importar rutas
