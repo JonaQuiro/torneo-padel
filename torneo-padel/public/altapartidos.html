@@ -27,6 +27,8 @@
   </form>
 
   <script>
+    // Cambiá esto por la URL donde está tu API, ej:
+    // const api = 'https://mi-api.up.railway.app';
     const api = '';
 
     async function cargarZonas() {
@@ -48,6 +50,7 @@
         const select = document.getElementById(id);
         select.innerHTML = '';
         parejas.forEach(p => {
+          // Según tu JSON, los campos para nombres son Pareja1Jugador1 y Pareja1Jugador2
           const opt = document.createElement('option');
           opt.value = p.Id;
           opt.textContent = `${p.Pareja1Jugador1} / ${p.Pareja1Jugador2}`;
