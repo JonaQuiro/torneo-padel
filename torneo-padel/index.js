@@ -1,35 +1,20 @@
 const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
 const path = require('path');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const { getConnection, sql } = require('./db/config');
 
 const app = express();
-
-// Puerto dinámico para Railway o 3000 en local
 const port = process.env.PORT || 3000;
 
-// Configuración CORS - permitir solo frontend en Railway y localhost
-const allowedOrigins = [
-  'https://torneo-padel-production.up.railway.app',
-  'http://localhost:3000'
-];
-
-app.use(cors({
-  origin: function(origin, callback) {
-    // Permitir requests sin origin (ej: postman, curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      return callback(new Error(`CORS no permitido para el origin: ${origin}`), false);
-    }
-    return callback(null, true);
-  }
-}));
-
-// Middleware para parsear JSON
+// Middlewares
+app.use(cors());
 app.use(bodyParser.json());
-
-// Servir archivos estáticos desde /public
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Configurar motor de vistas
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 // Importar rutas
 const jugadorRoutes = require('./routes/jugadorRoutes');
@@ -52,12 +37,30 @@ app.get('/', (req, res) => {
   res.send('API Torneo Pádel funcionando 🎾');
 });
 
-// Ruta para servir la vista resultados.html
-app.get('/resultados', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'resultados.html'));
+// Ruta para renderizar la vista resultados.ejs con partidos
+app.get('/resultados', async (req, res) => {
+  try {
+    const pool = await getConnection();
+
+    const result = await pool.request()
+      .query(`
+        SELECT Zona, 
+               Pareja1Jugador1, Pareja1Jugador2, 
+               Pareja2Jugador1, Pareja2Jugador2, 
+               Fecha, Horario
+        FROM partidos
+        ORDER BY Zona, Fecha, Horario
+      `);
+
+    const partidos = result.recordset;
+
+    res.render('resultados', { partidos });
+  } catch (error) {
+    console.error('Error consultando partidos:', error);
+    res.status(500).send('Error interno del servidor');
+  }
 });
 
-// Levantar servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
